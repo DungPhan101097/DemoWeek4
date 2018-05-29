@@ -8,23 +8,25 @@ import android.arch.persistence.room.Update;
 
 import java.util.List;
 
+import io.reactivex.Flowable;
+
 @Dao
 public interface NoteDao {
     @Query("SELECT * FROM Note")
-    List<Note> getAll();
+    Flowable<List<Note>> getAll();
+
+    @Query("SELECT * FROM Note")
+    List<Note> getAll2();
 
     @Query("SELECT * FROM Note WHERE Title LIKE :title LIMIT 1")
     Note findByTitile(String title);
 
     @Insert
-    void insertAll(List<Note> listNote);
-
-    @Insert
-    void insert(Note note);
+    long insert(Note note);
 
     @Update
-    void update(Note note);
+    int update(Note note);
 
     @Delete
-    void delete(Note note);
+    int delete(Note note);
 }

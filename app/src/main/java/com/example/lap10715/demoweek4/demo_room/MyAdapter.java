@@ -22,10 +22,13 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
+import io.reactivex.Flowable;
 import io.reactivex.Observable;
+import io.reactivex.ObservableSource;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.disposables.Disposable;
+import io.reactivex.functions.Function;
 import io.reactivex.schedulers.Schedulers;
 
 public class MyAdapter extends ArrayAdapter {
@@ -47,22 +50,16 @@ public class MyAdapter extends ArrayAdapter {
         noteDao = noteDatabase.getNoteDao();
     }
 
-    public void reloadData() {
-        Disposable curDispoable = Observable.create(emitter -> {
+    public void setNotes(List<Note> notes) {
+        this.notes = notes;
+    }
 
-            List listNote = noteDao.getAll();
-            if(listNote.size() == 0){
-                noteDao.insert(new Note(null, "Note 1", "Noi dung note 1", new Date()));
-                noteDao.insert(new Note(null, "Note 2", "Noi dung note 2", new Date()));
-            }
-            listNote = noteDao.getAll();
-
-            emitter.onNext(listNote);
-            emitter.onComplete();
-        }).subscribeOn(Schedulers.io())
+    public void loadData() {
+        Disposable curDispoable = noteDao.getAll()
+                .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(listNote -> {
-                    MyAdapter.this.notes = (List<Note>) listNote;
+                    MyAdapter.this.notes = listNote;
 
                     setNotifyOnChange(true);
                     notifyDataSetChanged();
@@ -100,40 +97,37 @@ public class MyAdapter extends ArrayAdapter {
     }
 
     public void deleteNote(int position) {
+
         Disposable curDispoable = Observable.create(emitter -> {
-
             Note deleteNote = this.notes.get(position);
-            noteDao.delete(deleteNote);
-
-            List listNote = noteDao.getAll();
-
-            emitter.onNext(listNote);
+            long isSuccess = noteDao.delete(deleteNote);
+            emitter.onNext(isSuccess);
             emitter.onComplete();
         }).subscribeOn(Schedulers.io())
+                .filter(isSuccess-> (long)isSuccess > -1)
+                .flatMap(booleanOptional -> noteDao.getAll().toObservable())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(listNote -> {
-                    MyAdapter.this.notes = (List<Note>) listNote;
+                    MyAdapter.this.notes = listNote;
 
                     setNotifyOnChange(true);
                     notifyDataSetChanged();
                 });
 
         compositeDisposable.add(curDispoable);
-
     }
 
     public void insertNote(String title, String content, Date curDate) {
         Disposable curDispoable = Observable.create(emitter -> {
-            noteDao.insert(new Note(null, title, content, curDate));
-
-            List listNote = noteDao.getAll();
-
-            emitter.onNext(listNote);
+            long isSuccess = noteDao.insert(new Note(null, title, content, curDate));
+            emitter.onNext( isSuccess);
             emitter.onComplete();
         }).subscribeOn(Schedulers.io())
+                .filter(isSuccess-> (long)isSuccess > -1)
+                .flatMap(booleanOptional -> noteDao.getAll().toObservable())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(listNote -> {
-                    MyAdapter.this.notes = (List<Note>) listNote;
+                    MyAdapter.this.notes = listNote;
 
                     setNotifyOnChange(true);
                     notifyDataSetChanged();
@@ -150,16 +144,16 @@ public class MyAdapter extends ArrayAdapter {
             curNote.setContent(content);
             curNote.setDate(curDate);
 
-            noteDao.update(curNote);
+            long isSuccess = noteDao.update(curNote);
 
-            List listNote = noteDao.getAll();
-
-            emitter.onNext(listNote);
+            emitter.onNext(isSuccess);
             emitter.onComplete();
         }).subscribeOn(Schedulers.io())
+                .filter(isSuccess-> (long)isSuccess > -1)
+                .flatMap(boolOptional-> noteDao.getAll().toObservable())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(listNote -> {
-                    MyAdapter.this.notes = (List<Note>) listNote;
+                    MyAdapter.this.notes = listNote;
 
                     setNotifyOnChange(true);
                     notifyDataSetChanged();

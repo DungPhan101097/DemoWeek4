@@ -67,7 +67,7 @@ public class DemoRoomActivity extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
-        myAdapter.reloadData();
+        myAdapter.loadData();
     }
 
     @Override
