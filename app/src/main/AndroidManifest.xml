@@ -21,6 +21,7 @@
 
         <activity android:name=".demo_room.DemoRoomActivity"/>
         <activity android:name=".demo_room.NewNoteActivity"/>
+        <activity android:name=".demo_realm.DemoRealmActivity"/>
     </application>
 
 </manifest>

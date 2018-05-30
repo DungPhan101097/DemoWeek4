@@ -5,10 +5,17 @@
     android:orientation="vertical">
 
     <Button
-        android:id="@+id/btn_keep_note"
+        android:id="@+id/btn_keep_note_room"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Keep your note"
+        android:text="Keep your note using Room"
+        android:layout_gravity="center_horizontal"/>
+
+    <Button
+        android:id="@+id/btn_keep_note_realm"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Keep your note using Realm"
         android:layout_gravity="center_horizontal"/>
 
 </LinearLayout>

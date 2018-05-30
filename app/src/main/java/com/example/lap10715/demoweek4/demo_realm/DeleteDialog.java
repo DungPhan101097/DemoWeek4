@@ -1,4 +1,4 @@
-package com.example.lap10715.demoweek4.demo_room;
+package com.example.lap10715.demoweek4.demo_realm;
 
 import android.app.Dialog;
 import android.content.Context;
@@ -25,7 +25,7 @@ public class DeleteDialog extends Dialog implements View.OnClickListener{
     public void onClick(View v) {
         switch (v.getId()){
             case R.id.btn_yes:
-                ((DemoRoomActivity)context).deleteNote(position);
+                ((DemoRealmActivity)context).deleteNote(position);
                 break;
             case R.id.btn_no:
                 dismiss();

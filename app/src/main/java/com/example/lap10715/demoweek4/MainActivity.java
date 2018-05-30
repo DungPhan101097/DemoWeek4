@@ -11,12 +11,14 @@ import android.os.Bundle;
 import android.widget.Button;
 import android.widget.Toast;
 
+import com.example.lap10715.demoweek4.demo_realm.DemoRealmActivity;
 import com.example.lap10715.demoweek4.demo_room.DemoRoomActivity;
 
 
 public class MainActivity extends AppCompatActivity {
 
-    private Button btnKeepYourNote;
+    private Button btnKeepYourNoteRoom;
+    private Button btnKeepYourNoteRealm;
 
     private static final int MY_PERMISSIONS_REQUEST_WRITE_STORAGE = 1;
 
@@ -47,11 +49,16 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void initViews() {
-        btnKeepYourNote = findViewById(R.id.btn_keep_note);
+        btnKeepYourNoteRoom = findViewById(R.id.btn_keep_note_room);
+        btnKeepYourNoteRealm = findViewById(R.id.btn_keep_note_realm);
 
-        btnKeepYourNote.setOnClickListener(v ->
+        btnKeepYourNoteRoom.setOnClickListener(v ->
                 startActivity(new Intent(MainActivity.this,
                         DemoRoomActivity.class)));
+
+        btnKeepYourNoteRealm.setOnClickListener(v ->
+                startActivity(new Intent(MainActivity.this,
+                        DemoRealmActivity.class)));
     }
 
     @Override
